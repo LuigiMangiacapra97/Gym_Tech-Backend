@@ -2,7 +2,6 @@ import { Utente } from ".prisma/client";
 import jwt from "jsonwebtoken";
 import config from "../config/config";
 import logging from "../config/logging";
-import IUser from "../interfaces/user.interface";
 
 const NAMESPACE = 'Auth Function';
 

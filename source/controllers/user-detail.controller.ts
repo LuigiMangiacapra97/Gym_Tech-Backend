@@ -3,7 +3,6 @@ import { PrismaClient, DettaglioUtente} from '@prisma/client';
 
 import logging from "../config/logging";
 
-import IUserDetail from "../interfaces/user-detail.interface";
 import IJwtToken from "../interfaces/jwt-token.interface";
 
 const NAMESPACE = 'Users Details Controller';
