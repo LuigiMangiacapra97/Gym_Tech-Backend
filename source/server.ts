@@ -7,8 +7,10 @@ import config from './config/config';
 import authRoutes, { route } from './routes/auth.route';
 import userRoutes from './routes/user.route';
 import userDetailRoutes from './routes/user-detail.route';
-import exerciseRoutes from './routes/exercises.route';
+import exerciseRoutes from './routes/exercise.route';
 import categoryExerciseRoute from './routes/category-exercise.route';
+import foodRoute from './routes/food.route';
+import categoryFoodRoute from './routes/category-food.route';
 
 const NAMESPACE = 'Server';
 const router = express();
@@ -49,6 +51,8 @@ router.use('/api/users', userRoutes);
 router.use('/api/usersDetails', userDetailRoutes);
 router.use('/api/exercises', exerciseRoutes);
 router.use('/api/category-exercise', categoryExerciseRoute);
+router.use('/api/foods', foodRoute);
+router.use('/api/category-food', categoryFoodRoute);
 
 
 // Error Heandling
