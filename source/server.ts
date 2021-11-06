@@ -4,13 +4,13 @@ import bodyParser from 'body-parser';
 import logging from './config/logging';
 import config from './config/config';
 
-import authRoutes, { route } from './routes/autenticazione.route';
-import userRoutes from './routes/utente.route';
-import userDetailRoutes from './routes/dettaglio-utente.route';
-import exerciseRoutes from './routes/esercizio.route';
-import categoryExerciseRoute from './routes/categoria-esercizio.route';
-import foodRoute from './routes/cibo.route';
-import categoryFoodRoute from './routes/categoria-cibo.route';
+import autenticazioneRoute, { route } from './routes/autenticazione.route';
+import utenteRoute from './routes/utente.route';
+import dettaglioUtenteRoute from './routes/dettaglio-utente.route';
+import esercizioRoute from './routes/esercizio.route';
+import categoriaEsercizioRoute from './routes/categoria-esercizio.route';
+import alimentoRoute from './routes/cibo.route';
+import categoriaAlimentoRoute from './routes/categoria-cibo.route';
 
 import protocolloAllenamentoRoute from './routes/protocollo-allenamento.route';
 import protocolloAlimentareRoute from './routes/protocollo-alimentare.route';
@@ -52,23 +52,20 @@ router.use((req, res, next) => {
 });
 
 // Routes
-router.use('/api/autenticazione', authRoutes);
-router.use('/api/utente', userRoutes);
-router.use('/api/dettaglo-utente', userDetailRoutes);
+router.use('/api/autenticazione', autenticazioneRoute);
+router.use('/api/utente', utenteRoute);
+router.use('/api/dettaglo-utente', dettaglioUtenteRoute);
 
-router.use('/api/esercizio', exerciseRoutes);
-router.use('/api/categoria-esercizo', categoryExerciseRoute);
-router.use('/api/cibo', foodRoute);
-router.use('/api/categoria-cibo', categoryFoodRoute);
+router.use('/api/esercizio', esercizioRoute);
+router.use('/api/categoria-esercizio', categoriaEsercizioRoute);
+router.use('/api/alimento', alimentoRoute);
+router.use('/api/categoria-alimento', categoriaAlimentoRoute);
 
 router.use('/api/protocollo-alimentare', protocolloAlimentareRoute);
 router.use('/api/protocollo-allenamento', protocolloAllenamentoRoute);
-router.use('/api/diario-allenamento', diarioAllenamentoRoute)
+router.use('/api/diario-allenamento', diarioAllenamentoRoute);
 
-router.use('api/segnalazione', segnalazioneRoute)
-
-// Per la gestione dei pagamenti sfrutteremo un servizio di terzi
-
+router.use('api/segnalazione', segnalazioneRoute);
 
 // Error Heandling
 router.use((req, res, next) => {

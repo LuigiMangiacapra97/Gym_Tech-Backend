@@ -12,6 +12,6 @@ router.get('/', extractJWT, utenteController.getAll);
 
 router.get('/:utenteId', extractJWT, utenteController.getSingle);
 
-router.get('/:utenteId/details', extractJWT, utenteController.getAllDetailsOfUser);
+router.get('/:utenteId/dettaglio', extractJWT, utenteController.getAllDetailsOfUser);
 
 export = router;
