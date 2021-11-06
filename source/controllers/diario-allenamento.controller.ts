@@ -1,23 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient, DettaglioUtente} from '@prisma/client';
+import { PrismaClient, DiarioAllenamento} from ".prisma/client";
 
 import logging from "../config/logging";
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Users Details Controller';
+const NAMESPACE = 'Diario Allenamento Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating user detail');
+    logging.debug(NAMESPACE, 'Creazione diario allenamento');
 
-    let bodyInfo: DettaglioUtente = req.body;
+    let bodyInfo: DiarioAllenamento = req.body;
 
-    const dettaglioUente = prisma.dettaglioUtente.create({
+    const diario_allenamento = prisma.diarioAllenamento.create({
         data: bodyInfo
     });
 
-    dettaglioUente.then(result => {
+    diario_allenamento.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -26,15 +26,15 @@ const create = (req: Request, res: Response, next: NextFunction) => {
             message: error.message,
             error
         });
-    });
+    })
 };
 
-const usersDetails = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all user details');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutti i diari allenamento');
 
-    const userDetails = prisma.dettaglioUtente.findMany();
+    const diari_allenamento = prisma.diarioAllenamento.findMany();
 
-    userDetails.then(result => {
+    diari_allenamento.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -43,21 +43,21 @@ const usersDetails = (req: Request, res: Response, next: NextFunction) => {
             message: error.message,
             error
         });
-    });
+    })
 };
 
-const userDetail = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get single user detail');
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero il singolo diario di allenamento');
 
-    let userDetailId = parseInt(req.params.userDetailId);
+    let diarioAllenamentoId = parseInt(req.params.diarioAllenamentoId);
 
-    const userDetail = prisma.dettaglioUtente.findUnique({
+    const diario_allenamento = prisma.diarioAllenamento.findUnique({
         where: {
-            IdDettaglioUtente: userDetailId
+            IdDiarioAllenamento: diarioAllenamentoId,
         }
-    });
+    })
 
-    userDetail.then(result => {
+    diario_allenamento.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -66,24 +66,25 @@ const userDetail = (req: Request, res: Response, next: NextFunction) => {
             message: error.message,
             error
         });
-    });
+    })
 };
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update user detail');
+    logging.debug(NAMESPACE, 'Aggiorno il diario di allenamento');
 
-    let userDetailId = parseInt(req.params.userDetailId);
+    let diarioAllenamentoId = parseInt(req.params.diarioAllenamentoId);
 
-    let bodyInfo: DettaglioUtente = req.body;
+    let bodyInfo: DiarioAllenamento = req.body;
 
-    const userDetailUpdate = prisma.dettaglioUtente.update({
+
+    const diatio_allenamento_update = prisma.diarioAllenamento.update({
         where: {
-            IdDettaglioUtente: userDetailId
+            IdDiarioAllenamento: diarioAllenamentoId ,
         },
         data: bodyInfo
-    });
+    })
 
-    userDetailUpdate.then(result => {
+    diatio_allenamento_update.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -92,12 +93,12 @@ const update = (req: Request, res: Response, next: NextFunction) => {
             message: error.message,
             error
         });
-    });
+    })
 };
 
 export default {
     create,
-    usersDetails,
-    userDetail,
+    getAll,
+    getSingle,
     update
 };

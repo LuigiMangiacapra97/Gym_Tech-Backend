@@ -1,23 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { Alimento, CategoriaAlimento, PrismaClient } from ".prisma/client";
+import { PrismaClient, CategoriaEsercizio } from ".prisma/client";
 
 import logging from "../config/logging";
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Food Categories Controller';
+const NAMESPACE = 'Categoria Esercizio Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating food category');
+    logging.debug(NAMESPACE, 'Creazione categoria esercizio');
 
-    let bodyInfo: CategoriaAlimento = req.body;
+    let bodyInfo: CategoriaEsercizio = req.body;
 
-    const food = prisma.categoriaAlimento.create({
+    const categoria_esercizio = prisma.categoriaEsercizio.create({
         data: bodyInfo
     });
 
-    food.then(result => {
+    categoria_esercizio.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -29,12 +29,12 @@ const create = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const food_categories = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all foods categories');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutte le categorie esercizi');
 
-    const food_categories = prisma.categoriaAlimento.findMany();
+    const categorie_esercizi = prisma.categoriaEsercizio.findMany();
 
-    food_categories.then(result => {
+    categorie_esercizi.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -46,18 +46,18 @@ const food_categories = (req: Request, res: Response, next: NextFunction) => {
     })
 };
 
-const food_category = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get food category');
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero la singola categoria esercizio');
 
-    let foodCategoryId = parseInt(req.params.foodCategoryId);
+    let categoriaEsercizioId = parseInt(req.params.categoriaEsercizioId);
 
-    let food_category = prisma.categoriaAlimento.findUnique({
+    const categoria_esercizio = prisma.categoriaEsercizio.findUnique({
         where: {
-            IdCategoriaAlimento: foodCategoryId
+            IdCategoriaEsercizio: categoriaEsercizioId,
         }
-    });
+    })
 
-    food_category.then(result => {
+    categoria_esercizio.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -70,20 +70,21 @@ const food_category = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update food category');
+    logging.debug(NAMESPACE, 'Aggiorno la categoria esercizio');
 
-    let foodCategoryId = parseInt(req.params.foodCategoryId);
+    let categoriaEsercizioId = parseInt(req.params.categoriaEsercizioId);
 
-    let bodyInfo: CategoriaAlimento = req.body;
+    let bodyInfo: CategoriaEsercizio = req.body;
 
-    const food_category_update = prisma.categoriaAlimento.update({
+
+    const categoria_esercizio_update = prisma.categoriaEsercizio.update({
         where: {
-            IdCategoriaAlimento: foodCategoryId
+            IdCategoriaEsercizio: categoriaEsercizioId,
         },
         data: bodyInfo
-    });
+    })
 
-    food_category_update.then(result => {
+    categoria_esercizio_update.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -92,12 +93,12 @@ const update = (req: Request, res: Response, next: NextFunction) => {
             message: error.message,
             error
         });
-    });
+    })
 };
 
 export default {
     create,
-    food_categories,
-    food_category,
-    update,
+    getAll,
+    getSingle,
+    update
 };

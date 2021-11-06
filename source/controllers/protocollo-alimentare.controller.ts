@@ -1,23 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient, Esercizio} from ".prisma/client";
+import { PrismaClient, ProtocolloAlimentare } from ".prisma/client";
 
 import logging from "../config/logging";
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Exercise Controller';
+const NAMESPACE = 'Protocollo Alimentare Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating exercise');
+    logging.debug(NAMESPACE, 'Creazione protocollo alimentare');
 
-    let bodyInfo: Esercizio = req.body;
+    let bodyInfo: ProtocolloAlimentare = req.body;
 
-    const exercise = prisma.esercizio.create({
+    const protocollo_alimentare = prisma.protocolloAlimentare.create({
         data: bodyInfo
     });
 
-    exercise.then(result => {
+    protocollo_alimentare.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -29,12 +29,12 @@ const create = (req: Request, res: Response, next: NextFunction) => {
     })
 };
 
-const exercises = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all exercises');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutti i protocolli alimentari');
 
-    const exercises = prisma.esercizio.findMany();
+    const protocolli_alimentari = prisma.protocolloAlimentare.findMany();
 
-    exercises.then(result => {
+    protocolli_alimentari.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -46,18 +46,18 @@ const exercises = (req: Request, res: Response, next: NextFunction) => {
     })
 };
 
-const exercise = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get exercise');
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero il singolo protocollo alimentare');
 
-    let exerciseId = parseInt(req.params.exerciseId);
+    let procolloAlimentareId = parseInt(req.params.procolloAlimentareId);
 
-    const exercise = prisma.categoriaEsercizio.findUnique({
+    const protocollo_alimentare = prisma.protocolloAlimentare.findUnique({
         where: {
-            IdCategoriaEsercizio: exerciseId,
+            IdProtocolloAlimentare: procolloAlimentareId,
         }
     })
 
-    exercise.then(result => {
+    protocollo_alimentare.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -70,21 +70,21 @@ const exercise = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update exercise');
+    logging.debug(NAMESPACE, 'Aggiorno il protocollo alimentare');
 
-    let exerciseId = parseInt(req.params.exerciseId);
+    let procolloAlimentareId = parseInt(req.params.procolloAlimentareId);
 
-    let bodyInfo: Esercizio = req.body;
+    let bodyInfo: ProtocolloAlimentare = req.body;
 
 
-    const exercise_update = prisma.esercizio.update({
+    const protocollo_alimentare_update = prisma.protocolloAlimentare.update({
         where: {
-            IdEsercizio: exerciseId,
+            IdProtocolloAlimentare: procolloAlimentareId ,
         },
         data: bodyInfo
     })
 
-    exercise_update.then(result => {
+    protocollo_alimentare_update.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -98,7 +98,7 @@ const update = (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     create,
-    exercises,
-    exercise,
+    getAll,
+    getSingle,
     update
 };

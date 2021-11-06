@@ -93,6 +93,7 @@ model Utente {
   DettaglioUtente       DettaglioUtente[]
   ProtocolloAlimentare  ProtocolloAlimentare[]
   ProtocolloAllenamento ProtocolloAllenamento[]
+  Segnalazioni          Segnalazioni[]
   StoricoAbbonamento    StoricoAbbonamento[]
   other_Utente          Utente[]                @relation("UtenteToUtente_Utente_IdUtente")
 
@@ -126,6 +127,16 @@ model StoricoAbbonamento {
   Utente                    Utente?      @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "storicoabbonamento_ibfk_2")
 
   @@index([Abbonamenti_IdAbbonamento], map: "Abbonamenti_IdAbbonamento")
+  @@index([Utente_IdUtente], map: "Utente_IdUtente")
+}
+
+model Segnalazioni {
+  IdSegnalazione          Int     @id @default(autoincrement())
+  OggettoSegnalazione     String  @db.VarChar(45)
+  DescrizioneSegnalazione String  @db.Text
+  Utente_IdUtente         Int?
+  Utente                  Utente? @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "segnalazioni_ibfk_1")
+
   @@index([Utente_IdUtente], map: "Utente_IdUtente")
 }
 

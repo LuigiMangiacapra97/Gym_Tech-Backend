@@ -6,14 +6,13 @@ import bycriptjs from 'bcryptjs';
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Users Controller';
+const NAMESPACE = 'Utente Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating user');
+    logging.debug(NAMESPACE, 'Creazione utente');
 
     let bodyInfo: Utente = req.body;
-    bodyInfo.Eliminato = 0;
     bodyInfo.Password = bodyInfo.Nome + bodyInfo.Cognome + bodyInfo.DataNascita;
 
     bycriptjs.hash(bodyInfo.Password, 10, (hasError, hash) => {
@@ -26,11 +25,11 @@ const create = (req: Request, res: Response, next: NextFunction) => {
 
         bodyInfo.Password = hash;
 
-        const user = prisma.utente.create({
+        const utente = prisma.utente.create({
             data: bodyInfo
         });
 
-        user.then(result => {
+        utente.then(result => {
             return res.status(200).json(result);
         }).catch(error => {
             logging.error(NAMESPACE, error.message, error);
@@ -43,12 +42,12 @@ const create = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const users = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all users');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutti gli utenti');
 
-    const users = prisma.utente.findMany();
+    const utenti = prisma.utente.findMany();
 
-    users.then(result => {
+    utenti.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -60,21 +59,18 @@ const users = (req: Request, res: Response, next: NextFunction) => {
     })
 };
 
-/*
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero il singolo utente');
 
-*/
-const user = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get single user');
+    let utenteId = parseInt(req.params.utenteId);
 
-    let userId = parseInt(req.params.userId);
-
-    const user = prisma.utente.findUnique({
+    const utente = prisma.utente.findUnique({
         where: {
-            IdUtente: userId,
+            IdUtente: utenteId,
         }
     })
 
-    user.then(result => {
+    utente.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -87,9 +83,9 @@ const user = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update user');
+    logging.debug(NAMESPACE, 'Aggionro l\'utente');
 
-    let userId = parseInt(req.params.userId);
+    let utenteId = parseInt(req.params.utenteId);
 
     let bodyInfo: Utente = req.body;
 
@@ -104,14 +100,14 @@ const update = (req: Request, res: Response, next: NextFunction) => {
 
             bodyInfo.Password = hash;
 
-            const userUpdate = prisma.utente.update({
+            const utente_update = prisma.utente.update({
                 where: {
-                    IdUtente: userId
+                    IdUtente: utenteId
                 },
                 data: bodyInfo
             });
 
-            userUpdate.then(result => {
+            utente_update.then(result => {
                 return res.status(200).json(result);
             }).catch(error => {
                 logging.error(NAMESPACE, error.message, error);
@@ -123,14 +119,14 @@ const update = (req: Request, res: Response, next: NextFunction) => {
             });
         });
     } else {
-        const userUpdate = prisma.utente.update({
+        const utente_update = prisma.utente.update({
             where: {
-                IdUtente: userId
+                IdUtente: utenteId
             },
             data: bodyInfo
         });
 
-        userUpdate.then(result => {
+        utente_update.then(result => {
             return res.status(200).json(result);
         }).catch(error => {
             logging.error(NAMESPACE, error.message, error);
@@ -143,21 +139,21 @@ const update = (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-const userDetails = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all details of single user');
+const getAllDetailsOfUser = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutti i dettagli di un utente specifico');
 
-    let userId = parseInt(req.params.userId);
+    let utenteId = parseInt(req.params.utenteId);
 
-    const userDetails = prisma.utente.findUnique({
+    const dettagli_utente = prisma.utente.findUnique({
         where: {
-            IdUtente: userId,
+            IdUtente: utenteId,
         },
         select: {
             DettaglioUtente: true
         }
     });
 
-    userDetails.then(result => {
+    dettagli_utente.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -171,8 +167,8 @@ const userDetails = (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     create,
-    users,
-    user,
+    getAll,
+    getSingle,
     update,
-    userDetails
+    getAllDetailsOfUser
 };

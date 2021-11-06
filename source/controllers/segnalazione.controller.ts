@@ -1,23 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { Alimento, PrismaClient } from ".prisma/client";
+import { PrismaClient, Segnalazioni } from ".prisma/client";
 
 import logging from "../config/logging";
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Foods Controller';
+const NAMESPACE = 'Segnalazione Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating food');
+    logging.debug(NAMESPACE, 'Creazione segnalazione');
 
-    let bodyInfo: Alimento = req.body;
+    let bodyInfo: Segnalazioni = req.body;
 
-    const food = prisma.alimento.create({
+    const segnalazione = prisma.segnalazioni.create({
         data: bodyInfo
     });
 
-    food.then(result => {
+    segnalazione.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -29,12 +29,12 @@ const create = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const foods = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all foods');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutte le segnalazioni');
 
-    const foods = prisma.alimento.findMany();
+    const segnalazioni = prisma.segnalazioni.findMany();
 
-    foods.then(result => {
+    segnalazioni.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -46,18 +46,18 @@ const foods = (req: Request, res: Response, next: NextFunction) => {
     })
 };
 
-const food = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get food');
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero la singola segnalazione');
 
-    let foodId = parseInt(req.params.foodId);
+    let segnalazioneId = parseInt(req.params.segnalazioneId);
 
-    let food = prisma.alimento.findUnique({
+    let segnalazione = prisma.segnalazioni.findUnique({
         where: {
-            IdAlimento: foodId
+            IdSegnalazione: segnalazioneId
         }
     });
 
-    food.then(result => {
+    segnalazione.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -70,20 +70,20 @@ const food = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update food');
+    logging.debug(NAMESPACE, 'Aggiorno la segnalazione');
 
-    let foodId = parseInt(req.params.foodId);
+    let segnalazioneId = parseInt(req.params.segnalazioneId);
 
-    let bodyInfo: Alimento = req.body;
+    let bodyInfo: Segnalazioni = req.body;
 
-    const food_update = prisma.alimento.update({
+    const segnalazione_update = prisma.segnalazioni.update({
         where: {
-            IdAlimento: foodId
+            IdSegnalazione: segnalazioneId
         },
         data: bodyInfo
     });
 
-    food_update.then(result => {
+    segnalazione_update.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -97,7 +97,7 @@ const update = (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     create,
-    foods,
-    food,
+    getAll,
+    getSingle,
     update,
 };

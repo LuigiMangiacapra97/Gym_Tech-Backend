@@ -1,40 +1,23 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient, CategoriaEsercizio } from ".prisma/client";
+import { PrismaClient, Esercizio} from ".prisma/client";
 
 import logging from "../config/logging";
 
 import IJwtToken from "../interfaces/jwt-token.interface";
 
-const NAMESPACE = 'Exercise Categories Controller';
+const NAMESPACE = 'Esercizio Controller';
 const prisma = new PrismaClient();
 
 const create = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Creating exercise category');
+    logging.debug(NAMESPACE, 'Creazione esercizio');
 
-    let bodyInfo: CategoriaEsercizio = req.body;
+    let bodyInfo: Esercizio = req.body;
 
-    const exercise_category = prisma.categoriaEsercizio.create({
+    const esercizio = prisma.esercizio.create({
         data: bodyInfo
     });
 
-    exercise_category.then(result => {
-        return res.status(200).json(result);
-    }).catch(error => {
-        logging.error(NAMESPACE, error.message, error);
-
-        return res.status(400).json({
-            message: error.message,
-            error
-        });
-    });
-};
-
-const exercise_categories = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get all exercise categories');
-
-    const exercise_categories = prisma.categoriaEsercizio.findMany();
-
-    exercise_categories.then(result => {
+    esercizio.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -46,18 +29,35 @@ const exercise_categories = (req: Request, res: Response, next: NextFunction) =>
     })
 };
 
-const exercise_category = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Get exercise category');
+const getAll = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero tutti gli esercizi');
 
-    let exerciseCategoryId = parseInt(req.params.exerciseCategoryId);
+    const esercizi = prisma.esercizio.findMany();
 
-    const exercise_category = prisma.categoriaEsercizio.findUnique({
+    esercizi.then(result => {
+        return res.status(200).json(result);
+    }).catch(error => {
+        logging.error(NAMESPACE, error.message, error);
+
+        return res.status(400).json({
+            message: error.message,
+            error
+        });
+    })
+};
+
+const getSingle = (req: Request, res: Response, next: NextFunction) => {
+    logging.debug(NAMESPACE, 'Recupero il singolo esercizio');
+
+    let esercizioId = parseInt(req.params.esercizioId);
+
+    const esercizio = prisma.categoriaEsercizio.findUnique({
         where: {
-            IdCategoriaEsercizio: exerciseCategoryId,
+            IdCategoriaEsercizio: esercizioId,
         }
     })
 
-    exercise_category.then(result => {
+    esercizio.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -70,21 +70,21 @@ const exercise_category = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = (req: Request, res: Response, next: NextFunction) => {
-    logging.debug(NAMESPACE, 'Update exercise category');
+    logging.debug(NAMESPACE, 'Aggiorno l\'esercizio');
 
-    let exerciseCategoryId = parseInt(req.params.exerciseCategoryId);
+    let esercizioId = parseInt(req.params.esercizioId);
 
-    let bodyInfo: CategoriaEsercizio = req.body;
+    let bodyInfo: Esercizio = req.body;
 
 
-    const exercise_category_update = prisma.categoriaEsercizio.update({
+    const esercizio_update = prisma.esercizio.update({
         where: {
-            IdCategoriaEsercizio: exerciseCategoryId,
+            IdEsercizio: esercizioId,
         },
         data: bodyInfo
     })
 
-    exercise_category_update.then(result => {
+    esercizio_update.then(result => {
         return res.status(200).json(result);
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
@@ -98,7 +98,7 @@ const update = (req: Request, res: Response, next: NextFunction) => {
 
 export default {
     create,
-    exercise_categories,
-    exercise_category,
+    getAll,
+    getSingle,
     update
 };

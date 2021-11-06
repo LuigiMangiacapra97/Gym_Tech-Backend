@@ -6,7 +6,7 @@ import logging from "../config/logging";
 
 import bycriptjs from 'bcryptjs';
 
-const NAMESPACE = 'Auth Controller';
+const NAMESPACE = 'Autenticazione Controller';
 const prisma = new PrismaClient();
 
 const login = (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +21,6 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     });
 
     user.then(u => {
-        console.log("Stampo u ->", u);
         if(u) {
             if(u.Password && bodyInfo.Password) {
                 bycriptjs.compare(bodyInfo.Password, u.Password, (error, result) => {
@@ -73,7 +72,6 @@ const register = (req: Request, res: Response, next: NextFunction) => {
     logging.debug(NAMESPACE, 'Register');
 
     let bodyInfo: Utente = req.body;
-    bodyInfo.Eliminato = 0;
 
     if(bodyInfo.Password) {
         bycriptjs.hash(bodyInfo.Password, 10, (hasError, hash) => {
