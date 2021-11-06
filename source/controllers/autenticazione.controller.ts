@@ -73,39 +73,33 @@ const register = (req: Request, res: Response, next: NextFunction) => {
 
     let bodyInfo: Utente = req.body;
 
-    if(bodyInfo.Password) {
-        bycriptjs.hash(bodyInfo.Password, 10, (hasError, hash) => {
-            if(hasError) {
-                logging.error(NAMESPACE, hasError.message, hasError);
-                
-                return res.status(400).json({
-                    message: hasError.message,
-                    error: hasError
-                });
-            }
-
-            const userRegister = prisma.utente.create({
-                data: bodyInfo
+    bycriptjs.hash(bodyInfo.Password, 10, (hasError, hash) => {
+        if(hasError) {
+            logging.error(NAMESPACE, hasError.message, hasError);
+            
+            return res.status(400).json({
+                message: hasError.message,
+                error: hasError
             });
+        }
 
-            userRegister.then(result => {
-                return res.status(200).json(result);
-            }).catch(error => {
-                logging.error(NAMESPACE, error.message, error);
+        bodyInfo.Password = hash;
 
-                return res.status(400).json({
-                    message: error.message,
-                    error
-                });
+        const userRegister = prisma.utente.create({
+            data: bodyInfo
+        });
+
+        userRegister.then(result => {
+            return res.status(200).json(result);
+        }).catch(error => {
+            logging.error(NAMESPACE, error.message, error);
+
+            return res.status(400).json({
+                message: error.message,
+                error
             });
         });
-    } else {
-        logging.error(NAMESPACE, 'The password field is not present');
-
-        return res.status(400).json({
-            message: 'The password field is not present'
-        });
-    }
+    });
 };
 
 

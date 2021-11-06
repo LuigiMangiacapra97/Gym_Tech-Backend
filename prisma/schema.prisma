@@ -85,7 +85,7 @@ model Utente {
   Cognome               String                  @db.VarChar(45)
   DataNascita           String                  @db.VarChar(45)
   Email                 String                  @unique(map: "Email") @db.VarChar(45)
-  Password              String?                 @db.VarChar(255)
+  Password              String                 @db.VarChar(255)
   Ruolo                 Utente_Ruolo
   Storico               Int                     @default(0) @db.TinyInt
   Utente_IdUtente       Int?
