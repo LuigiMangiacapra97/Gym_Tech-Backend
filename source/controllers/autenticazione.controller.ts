@@ -14,13 +14,13 @@ const login = (req: Request, res: Response, next: NextFunction) => {
     
     let bodyInfo: Utente = req.body;
 
-    const user = prisma.utente.findUnique({
+    const utente = prisma.utente.findUnique({
         where: {
             Email: bodyInfo.Email
         },
     });
 
-    user.then(u => {
+    utente.then(u => {
         if(u) {
             if(u.Password && bodyInfo.Password) {
                 bycriptjs.compare(bodyInfo.Password, u.Password, (error, result) => {
@@ -49,14 +49,16 @@ const login = (req: Request, res: Response, next: NextFunction) => {
                     }
                 })
             } else {
-                logging.error(NAMESPACE, 'The password field is not present');
+                logging.error(NAMESPACE, 'Il campo passowrd non è presente.');
     
                 return res.status(400).json({
-                    message: 'The password field is not present'
+                    message: 'Il campo passowrd non è presente.'
                 });
             }
         } else {
-            return res.status(400).json(null);
+            return res.status(400).json({
+                message: "Utente non trovato nel database."
+            });
         }
     }).catch(error => {
         logging.error(NAMESPACE, error.message, error);
