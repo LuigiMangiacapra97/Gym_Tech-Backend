@@ -8,13 +8,12 @@ datasource db {
 }
 
 model Alimento {
-  IdAlimento                            Int                         @id
-  NomeAlimento                          String                      @db.VarChar(45)
-  Foto                                  String?                     @db.VarChar(45)
-  ValoriNutrizionali                    String?                     @db.VarChar(45)
+  IdAlimento                            Int               @id
+  NomeAlimento                          String            @db.VarChar(45)
+  Foto                                  String?           @db.VarChar(45)
+  ValoriNutrizionali                    String?           @db.VarChar(45)
   CategoriaAlimento_IdCategoriaAlimento Int
-  CategoriaAlimento                     CategoriaAlimento           @relation(fields: [CategoriaAlimento_IdCategoriaAlimento], references: [IdCategoriaAlimento], onDelete: NoAction, onUpdate: NoAction, map: "fk_Alimento_CategoriaAlimento1")
-  DettaglioSchedaAlimentare             DettaglioSchedaAlimentare[]
+  CategoriaAlimento                     CategoriaAlimento @relation(fields: [CategoriaAlimento_IdCategoriaAlimento], references: [IdCategoriaAlimento], onDelete: NoAction, onUpdate: NoAction, map: "fk_Alimento_CategoriaAlimento1")
 
   @@index([CategoriaAlimento_IdCategoriaAlimento], map: "fk_Alimento_CategoriaAlimento1")
 }
@@ -31,28 +30,6 @@ model CategoriaEsercizio {
   Esercizio              Esercizio[]
 }
 
-model DettaglioSchedaAlimentare {
-  IdDettaglioSchedaAlimentare         Int              @id @default(autoincrement())
-  SchedaAlimentare_IdSchedaAlimentare Int
-  Alimento_IdAlimento                 Int
-  Alimento                            Alimento         @relation(fields: [Alimento_IdAlimento], references: [IdAlimento], onDelete: NoAction, onUpdate: NoAction, map: "fk_DettaglioSchedaAlimentare_Alimento1")
-  SchedaAlimentare                    SchedaAlimentare @relation(fields: [SchedaAlimentare_IdSchedaAlimentare], references: [IdSchedaAlimentare], onDelete: NoAction, onUpdate: NoAction, map: "fk_DettaglioSchedaAlimentare_SchedaAlimentare1")
-
-  @@index([Alimento_IdAlimento], map: "fk_DettaglioSchedaAlimentare_Alimento1")
-  @@index([SchedaAlimentare_IdSchedaAlimentare], map: "fk_DettaglioSchedaAlimentare_SchedaAlimentare1")
-}
-
-model DettaglioSchedaAllenamento {
-  IdDettaglioSchedaAllenamento          Int               @id @default(autoincrement())
-  SchedaAllenamento_IdSchedaAllenamento Int
-  Esercizio_IdEsercizio                 Int
-  Esercizio                             Esercizio         @relation(fields: [Esercizio_IdEsercizio], references: [IdEsercizio], onDelete: NoAction, onUpdate: NoAction, map: "fk_DettaglioSchedaAllenamento_Esercizio1")
-  SchedaAllenamento                     SchedaAllenamento @relation(fields: [SchedaAllenamento_IdSchedaAllenamento], references: [IdSchedaAllenamento], onDelete: NoAction, onUpdate: NoAction, map: "fk_DettaglioSchedaAllenamento_SchedaAllenamento1")
-
-  @@index([Esercizio_IdEsercizio], map: "fk_DettaglioSchedaAllenamento_Esercizio1")
-  @@index([SchedaAllenamento_IdSchedaAllenamento], map: "fk_DettaglioSchedaAllenamento_SchedaAllenamento1")
-}
-
 model DettaglioUtente {
   IdDettaglioUtente Int    @id @default(autoincrement())
   Peso              String @db.VarChar(45)
@@ -60,66 +37,46 @@ model DettaglioUtente {
   DataDettaglio     String @db.VarChar(45)
   Storico           Int    @default(0) @db.TinyInt
   Utente_IdUtente   Int
-  Eliminato         Int    @default(0) @db.TinyInt
   Utente            Utente @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_DettaglioUtente_Utente")
 
   @@index([Utente_IdUtente], map: "fk_DettaglioUtente_Utente")
 }
 
 model Esercizio {
-  IdEsercizio                             Int                          @id @default(autoincrement())
-  NomeEsercizio                           String                       @db.VarChar(45)
-  DescrizioneEsercizio                    String                       @db.VarChar(45)
-  Foto                                    Bytes?                       @db.Blob
-  Video                                   Bytes?                       @db.Blob
+  IdEsercizio                             Int                @id @default(autoincrement())
+  NomeEsercizio                           String             @db.VarChar(45)
+  DescrizioneEsercizio                    String             @db.VarChar(45)
+  Foto                                    Bytes?             @db.Blob
+  Video                                   Bytes?             @db.Blob
   CategoriaEsercizio_IdCategoriaEsercizio Int
-  CategoriaEsercizio                      CategoriaEsercizio           @relation(fields: [CategoriaEsercizio_IdCategoriaEsercizio], references: [IdCategoriaEsercizio], onDelete: NoAction, onUpdate: NoAction, map: "fk_Esercizio_CategoriaEsercizio1")
-  DettaglioSchedaAllenamento              DettaglioSchedaAllenamento[]
+  CategoriaEsercizio                      CategoriaEsercizio @relation(fields: [CategoriaEsercizio_IdCategoriaEsercizio], references: [IdCategoriaEsercizio], onDelete: NoAction, onUpdate: NoAction, map: "fk_Esercizio_CategoriaEsercizio1")
 
   @@index([CategoriaEsercizio_IdCategoriaEsercizio], map: "fk_Esercizio_CategoriaEsercizio1")
 }
 
 model ProtocolloAlimentare {
-  IdProtocolloAlimentare   Int                @id @default(autoincrement())
-  Storico                  Int                @db.TinyInt
-  DataProtocolloAlimentare DateTime           @db.DateTime(0)
-  Utente_IdUtente          Int
-  Utente                   Utente             @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAlimentare_Utente1")
-  SchedaAlimentare         SchedaAlimentare[]
+  IdProtocolloAlimentare     Int      @id @default(autoincrement())
+  InizioProtocolloAlimentare DateTime @db.Date
+  FineProtocolloAlimentare   DateTime @db.Date
+  Storico                    Int      @db.TinyInt
+  Json                       String?  @db.LongText
+  Utente_IdUtente            Int
+  Utente                     Utente   @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAlimentare_Utente1")
 
   @@index([Utente_IdUtente], map: "fk_ProtocolloAlimentare_Utente1")
 }
 
 model ProtocolloAllenamento {
-  IdProtocolloAllenamento   Int                 @id @default(autoincrement())
-  Storico                   Int                 @db.TinyInt
-  DataProtocolloAllenamento DateTime            @db.DateTime(0)
-  Utente_IdUtente           Int
-  Eliminato                 Int                 @db.TinyInt
-  Utente                    Utente              @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAllenamento_Utente1")
-  SchedaAllenamento         SchedaAllenamento[]
+  IdProtocolloAllenamento     Int                 @id @default(autoincrement())
+  InizioProtocolloAllenamento DateTime            @db.Date
+  FineProtocolloAllenamento   DateTime            @db.Date
+  Storico                     Int                 @db.TinyInt
+  Json                        String?             @db.LongText
+  Utente_IdUtente             Int
+  Utente                      Utente              @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAllenamento_Utente1")
+  DiarioAllenamento           DiarioAllenamento[]
 
   @@index([Utente_IdUtente], map: "fk_ProtocolloAllenamento_Utente1")
-}
-
-model SchedaAlimentare {
-  IdSchedaAlimentare                          Int                         @id @default(autoincrement())
-  NomeSchedaAlimentare                        String                      @db.VarChar(45)
-  ProtocolloAlimentare_IdProtocolloAlimentare Int
-  ProtocolloAlimentare                        ProtocolloAlimentare        @relation(fields: [ProtocolloAlimentare_IdProtocolloAlimentare], references: [IdProtocolloAlimentare], onDelete: NoAction, onUpdate: NoAction, map: "fk_SchedaAlimentare_ProtocolloAlimentare1")
-  DettaglioSchedaAlimentare                   DettaglioSchedaAlimentare[]
-
-  @@index([ProtocolloAlimentare_IdProtocolloAlimentare], map: "fk_SchedaAlimentare_ProtocolloAlimentare1")
-}
-
-model SchedaAllenamento {
-  IdSchedaAllenamento                           Int                          @id @default(autoincrement())
-  NomeSchedaAllenamento                         String                       @db.VarChar(45)
-  ProtocolloAllenamento_IdProtocolloAllenamento Int
-  ProtocolloAllenamento                         ProtocolloAllenamento        @relation(fields: [ProtocolloAllenamento_IdProtocolloAllenamento], references: [IdProtocolloAllenamento], onDelete: NoAction, onUpdate: NoAction, map: "fk_SchedaAllenamento_ProtocolloAllenamento1")
-  DettaglioSchedaAllenamento                    DettaglioSchedaAllenamento[]
-
-  @@index([ProtocolloAllenamento_IdProtocolloAllenamento], map: "fk_SchedaAllenamento_ProtocolloAllenamento1")
 }
 
 model Utente {
@@ -128,17 +85,59 @@ model Utente {
   Cognome               String                  @db.VarChar(45)
   DataNascita           String                  @db.VarChar(45)
   Email                 String                  @unique(map: "Email") @db.VarChar(45)
-  Password              String?                 @db.VarChar(255)
+  Password              String                 @db.VarChar(255)
   Ruolo                 Utente_Ruolo
-  Eliminato             Int                     @default(0) @db.TinyInt
+  Storico               Int                     @default(0) @db.TinyInt
   Utente_IdUtente       Int?
   Utente                Utente?                 @relation("UtenteToUtente_Utente_IdUtente", fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "FKCoach_Atleta")
   DettaglioUtente       DettaglioUtente[]
   ProtocolloAlimentare  ProtocolloAlimentare[]
   ProtocolloAllenamento ProtocolloAllenamento[]
+  Segnalazioni          Segnalazioni[]
+  StoricoAbbonamento    StoricoAbbonamento[]
   other_Utente          Utente[]                @relation("UtenteToUtente_Utente_IdUtente")
 
   @@index([Utente_IdUtente], map: "FKCoach_Atleta")
+}
+
+model Abbonamenti {
+  IdAbbonamento      Int                  @id @default(autoincrement())
+  NomeAbbonamento    String               @db.VarChar(45)
+  Importo            Float                @db.Float
+  StoricoAbbonamento StoricoAbbonamento[]
+}
+
+model DiarioAllenamento {
+  IdDiarioAllenamento                           Int                    @id @default(autoincrement())
+  Storico                                       Boolean
+  Json                                          String?                @db.LongText
+  ProtocolloAllenamento_IdProtocolloAllenamento Int?
+  ProtocolloAllenamento                         ProtocolloAllenamento? @relation(fields: [ProtocolloAllenamento_IdProtocolloAllenamento], references: [IdProtocolloAllenamento], onDelete: Restrict, onUpdate: Restrict, map: "diarioallenamento_ibfk_1")
+
+  @@index([ProtocolloAllenamento_IdProtocolloAllenamento], map: "ProtocolloAllenamento_IdProtocolloAllenamento")
+}
+
+model StoricoAbbonamento {
+  IdStoricoAbbonamento      Int          @id @default(autoincrement())
+  DataAbbonamento           DateTime     @db.DateTime(0)
+  Storico                   Boolean
+  Abbonamenti_IdAbbonamento Int?
+  Utente_IdUtente           Int?
+  Abbonamenti               Abbonamenti? @relation(fields: [Abbonamenti_IdAbbonamento], references: [IdAbbonamento], onDelete: Restrict, onUpdate: Restrict, map: "storicoabbonamento_ibfk_1")
+  Utente                    Utente?      @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "storicoabbonamento_ibfk_2")
+
+  @@index([Abbonamenti_IdAbbonamento], map: "Abbonamenti_IdAbbonamento")
+  @@index([Utente_IdUtente], map: "Utente_IdUtente")
+}
+
+model Segnalazioni {
+  IdSegnalazione          Int     @id @default(autoincrement())
+  OggettoSegnalazione     String  @db.VarChar(45)
+  DescrizioneSegnalazione String  @db.Text
+  Utente_IdUtente         Int?
+  Utente                  Utente? @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "segnalazioni_ibfk_1")
+
+  @@index([Utente_IdUtente], map: "Utente_IdUtente")
 }
 
 enum Utente_Ruolo {
