@@ -8,26 +8,13 @@ datasource db {
 }
 
 model Alimento {
-  IdAlimento                            Int               @id
-  NomeAlimento                          String            @db.VarChar(45)
-  Foto                                  String?           @db.VarChar(45)
-  ValoriNutrizionali                    String?           @db.VarChar(45)
+  IdAlimento                            Int     @id
+  NomeAlimento                          String  @db.VarChar(45)
+  Foto                                  String? @db.VarChar(45)
+  ValoriNutrizionali                    String? @db.LongText
   CategoriaAlimento_IdCategoriaAlimento Int
-  CategoriaAlimento                     CategoriaAlimento @relation(fields: [CategoriaAlimento_IdCategoriaAlimento], references: [IdCategoriaAlimento], onDelete: NoAction, onUpdate: NoAction, map: "fk_Alimento_CategoriaAlimento1")
 
   @@index([CategoriaAlimento_IdCategoriaAlimento], map: "fk_Alimento_CategoriaAlimento1")
-}
-
-model CategoriaAlimento {
-  IdCategoriaAlimento   Int        @id @default(autoincrement())
-  NomeCategoriaAlimento String     @db.VarChar(45)
-  Alimento              Alimento[]
-}
-
-model CategoriaEsercizio {
-  IdCategoriaEsercizio   Int         @id @default(autoincrement())
-  NomeCategoriaEsercizio String      @db.VarChar(45)
-  Esercizio              Esercizio[]
 }
 
 model DettaglioUtente {
@@ -43,22 +30,20 @@ model DettaglioUtente {
 }
 
 model Esercizio {
-  IdEsercizio                             Int                @id @default(autoincrement())
-  NomeEsercizio                           String             @db.VarChar(45)
-  DescrizioneEsercizio                    String             @db.VarChar(45)
-  Foto                                    Bytes?             @db.Blob
-  Video                                   Bytes?             @db.Blob
-  CategoriaEsercizio_IdCategoriaEsercizio Int
-  CategoriaEsercizio                      CategoriaEsercizio @relation(fields: [CategoriaEsercizio_IdCategoriaEsercizio], references: [IdCategoriaEsercizio], onDelete: NoAction, onUpdate: NoAction, map: "fk_Esercizio_CategoriaEsercizio1")
-
-  @@index([CategoriaEsercizio_IdCategoriaEsercizio], map: "fk_Esercizio_CategoriaEsercizio1")
+  IdEsercizio          Int     @id @default(autoincrement())
+  NomeEsercizio        String  @db.VarChar(45)
+  DescrizioneEsercizio String? @db.VarChar(45)
+  ParteCorpo           String  @db.VarChar(50)
+  Obiettivo            String  @db.VarChar(50)
+  Attrezzatura         String  @db.VarChar(50)
+  Foto                 String? @db.VarChar(100)
 }
 
 model ProtocolloAlimentare {
   IdProtocolloAlimentare     Int      @id @default(autoincrement())
   InizioProtocolloAlimentare DateTime @db.Date
   FineProtocolloAlimentare   DateTime @db.Date
-  Storico                    Int      @db.TinyInt
+  Storico                    Int      @default(0) @db.TinyInt
   Json                       String?  @db.LongText
   Utente_IdUtente            Int
   Utente                     Utente   @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAlimentare_Utente1")
@@ -70,7 +55,7 @@ model ProtocolloAllenamento {
   IdProtocolloAllenamento     Int                 @id @default(autoincrement())
   InizioProtocolloAllenamento DateTime            @db.Date
   FineProtocolloAllenamento   DateTime            @db.Date
-  Storico                     Int                 @db.TinyInt
+  Storico                     Int                 @default(0) @db.TinyInt
   Json                        String?             @db.LongText
   Utente_IdUtente             Int
   Utente                      Utente              @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAllenamento_Utente1")
@@ -85,7 +70,7 @@ model Utente {
   Cognome               String                  @db.VarChar(45)
   DataNascita           String                  @db.VarChar(45)
   Email                 String                  @unique(map: "Email") @db.VarChar(45)
-  Password              String                 @db.VarChar(255)
+  Password              String                  @db.VarChar(255)
   Ruolo                 Utente_Ruolo
   Storico               Int                     @default(0) @db.TinyInt
   Utente_IdUtente       Int?
@@ -94,22 +79,14 @@ model Utente {
   ProtocolloAlimentare  ProtocolloAlimentare[]
   ProtocolloAllenamento ProtocolloAllenamento[]
   Segnalazioni          Segnalazioni[]
-  StoricoAbbonamento    StoricoAbbonamento[]
   other_Utente          Utente[]                @relation("UtenteToUtente_Utente_IdUtente")
 
   @@index([Utente_IdUtente], map: "FKCoach_Atleta")
 }
 
-model Abbonamenti {
-  IdAbbonamento      Int                  @id @default(autoincrement())
-  NomeAbbonamento    String               @db.VarChar(45)
-  Importo            Float                @db.Float
-  StoricoAbbonamento StoricoAbbonamento[]
-}
-
 model DiarioAllenamento {
   IdDiarioAllenamento                           Int                    @id @default(autoincrement())
-  Storico                                       Boolean
+  Storico                                       Boolean                @default(false)
   Json                                          String?                @db.LongText
   ProtocolloAllenamento_IdProtocolloAllenamento Int?
   ProtocolloAllenamento                         ProtocolloAllenamento? @relation(fields: [ProtocolloAllenamento_IdProtocolloAllenamento], references: [IdProtocolloAllenamento], onDelete: Restrict, onUpdate: Restrict, map: "diarioallenamento_ibfk_1")
@@ -117,25 +94,13 @@ model DiarioAllenamento {
   @@index([ProtocolloAllenamento_IdProtocolloAllenamento], map: "ProtocolloAllenamento_IdProtocolloAllenamento")
 }
 
-model StoricoAbbonamento {
-  IdStoricoAbbonamento      Int          @id @default(autoincrement())
-  DataAbbonamento           DateTime     @db.DateTime(0)
-  Storico                   Boolean
-  Abbonamenti_IdAbbonamento Int?
-  Utente_IdUtente           Int?
-  Abbonamenti               Abbonamenti? @relation(fields: [Abbonamenti_IdAbbonamento], references: [IdAbbonamento], onDelete: Restrict, onUpdate: Restrict, map: "storicoabbonamento_ibfk_1")
-  Utente                    Utente?      @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "storicoabbonamento_ibfk_2")
-
-  @@index([Abbonamenti_IdAbbonamento], map: "Abbonamenti_IdAbbonamento")
-  @@index([Utente_IdUtente], map: "Utente_IdUtente")
-}
-
 model Segnalazioni {
-  IdSegnalazione          Int     @id @default(autoincrement())
-  OggettoSegnalazione     String  @db.VarChar(45)
-  DescrizioneSegnalazione String  @db.Text
+  IdSegnalazione          Int                            @id @default(autoincrement())
+  OggettoSegnalazione     String                         @db.VarChar(45)
+  DescrizioneSegnalazione String                         @db.Text
+  StatoSegnalazione       Segnalazioni_StatoSegnalazione @default(aperta)
   Utente_IdUtente         Int?
-  Utente                  Utente? @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "segnalazioni_ibfk_1")
+  Utente                  Utente?                        @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "segnalazioni_ibfk_1")
 
   @@index([Utente_IdUtente], map: "Utente_IdUtente")
 }
@@ -144,4 +109,11 @@ enum Utente_Ruolo {
   admin
   coach
   atleta
+}
+
+enum Segnalazioni_StatoSegnalazione {
+  aperta
+  elaborazione
+  completata
+  EMPTY_ENUM_VALUE @map("")
 }

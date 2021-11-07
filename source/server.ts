@@ -57,9 +57,7 @@ router.use('/api/utente', utenteRoute);
 router.use('/api/dettaglo-utente', dettaglioUtenteRoute);
 
 router.use('/api/esercizio', esercizioRoute);
-router.use('/api/categoria-esercizio', categoriaEsercizioRoute);
 router.use('/api/alimento', alimentoRoute);
-router.use('/api/categoria-alimento', categoriaAlimentoRoute);
 
 router.use('/api/protocollo-alimentare', protocolloAlimentareRoute);
 router.use('/api/protocollo-allenamento', protocolloAllenamentoRoute);
