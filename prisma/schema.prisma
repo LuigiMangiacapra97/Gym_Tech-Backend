@@ -31,6 +31,7 @@ model DettaglioUtente {
 
 model Esercizio {
   IdEsercizio          Int     @id @default(autoincrement())
+  IndexFoto            Int
   NomeEsercizio        String  @db.VarChar(45)
   DescrizioneEsercizio String? @db.VarChar(45)
   ParteCorpo           String  @db.VarChar(50)

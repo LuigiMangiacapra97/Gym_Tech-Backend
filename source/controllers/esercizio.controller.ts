@@ -51,9 +51,9 @@ const getSingle = (req: Request, res: Response, next: NextFunction) => {
 
     let esercizioId = parseInt(req.params.esercizioId);
 
-    const esercizio = prisma.categoriaEsercizio.findUnique({
+    const esercizio = prisma.esercizio.findUnique({
         where: {
-            IdCategoriaEsercizio: esercizioId,
+            IdEsercizio: esercizioId,
         }
     })
 
