@@ -32,7 +32,7 @@ model DettaglioUtente {
 model Esercizio {
   IdEsercizio          Int     @id @default(autoincrement())
   IndexFoto            Int
-  NomeEsercizio        String  @db.VarChar(45)
+  NomeEsercizio        String  @db.VarChar(100)
   DescrizioneEsercizio String? @db.VarChar(45)
   ParteCorpo           String  @db.VarChar(50)
   Obiettivo            String  @db.VarChar(50)
@@ -57,11 +57,13 @@ model ProtocolloAllenamento {
   InizioProtocolloAllenamento DateTime            @db.Date
   FineProtocolloAllenamento   DateTime            @db.Date
   Storico                     Int                 @default(0) @db.TinyInt
-  Json                        String?             @db.LongText
   Utente_IdUtente             Int
+  Scheda_IdScheda             Int?
+  Schede                      Schede?             @relation(fields: [Scheda_IdScheda], references: [IdScheda], onDelete: Restrict, onUpdate: Restrict, map: "fk_ProtocolloAllenamento_Scheda1")
   Utente                      Utente              @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: NoAction, onUpdate: NoAction, map: "fk_ProtocolloAllenamento_Utente1")
   DiarioAllenamento           DiarioAllenamento[]
 
+  @@index([Scheda_IdScheda], map: "fk_ProtocolloAllenamento_Scheda1")
   @@index([Utente_IdUtente], map: "fk_ProtocolloAllenamento_Utente1")
 }
 
@@ -104,6 +106,13 @@ model Segnalazioni {
   Utente                  Utente?                        @relation(fields: [Utente_IdUtente], references: [IdUtente], onDelete: Restrict, onUpdate: Restrict, map: "segnalazioni_ibfk_1")
 
   @@index([Utente_IdUtente], map: "Utente_IdUtente")
+}
+
+model Schede {
+  IdScheda              Int                     @id @default(autoincrement())
+  NomeScheda            String                  @db.VarChar(50)
+  Json                  String                  @db.LongText
+  ProtocolloAllenamento ProtocolloAllenamento[]
 }
 
 enum Utente_Ruolo {
